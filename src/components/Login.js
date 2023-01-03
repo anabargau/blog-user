@@ -11,8 +11,8 @@ function Login() {
           <input type="text" name="username" id="username" required></input>
         </div>
         <div className="form-group">
-          <label htmlFor="password">Username:</label>
-          <input type="text" name="password" id="password" required></input>
+          <label htmlFor="password">Password:</label>
+          <input type="password" name="password" id="password" required></input>
         </div>
         <div>
           Don't have an account yet? Create one{' '}

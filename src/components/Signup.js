@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import uniqid from 'uniqid';
+import Nav from './Nav';
 
 function Signup() {
   const [errors, setErrors] = useState([]);
@@ -24,12 +25,13 @@ function Signup() {
       body: JSON.stringify(body),
     })
       .then((res) => {
-        if (!res.ok) {
-          return res.json();
-        }
+        return res.json();
       })
       .then((data) => {
         setErrors(data.errors);
+        if (data.redirectURL) {
+          window.location = data.redirectURL;
+        }
       });
   }
 
@@ -96,6 +98,7 @@ function Signup() {
 
   return (
     <div>
+      <Nav user={null} />
       <div>Sign Up</div>
       <form
         method="POST"
@@ -114,7 +117,9 @@ function Signup() {
           ></input>
           {errors.length > 0 &&
             errors.map((error) => {
-              return <div key={uniqid()}>{error.msg}</div>;
+              return error.param === 'username' ? (
+                <div key={uniqid()}>{error.msg}</div>
+              ) : null;
             })}
         </div>
         <div className="form-group">
@@ -128,7 +133,15 @@ function Signup() {
             onKeyUp={handleValidation}
             required
           ></input>
-          <div>{passwordError}</div>
+          {passwordError ? (
+            <div>{passwordError}</div>
+          ) : errors.length > 0 ? (
+            errors.map((error) => {
+              return error.param === 'password' ? (
+                <div key={uniqid()}>{error.msg}</div>
+              ) : null;
+            })
+          ) : null}
         </div>
         <div className="form-group">
           <label htmlFor="confirm-password">Confirm password:</label>
@@ -141,7 +154,15 @@ function Signup() {
             onKeyUp={handleValidation}
             required
           ></input>
-          <div>{confirmPasswordError}</div>
+          {confirmPasswordError ? (
+            <div>{confirmPasswordError}</div>
+          ) : errors.length > 0 ? (
+            errors.map((error) => {
+              return error.param === 'confirm_password' ? (
+                <div key={uniqid()}>{error.msg}</div>
+              ) : null;
+            })
+          ) : null}
         </div>
         <button type="submit">Sign up</button>
       </form>
